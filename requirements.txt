@@ -1,0 +1,7 @@
+pytorch
+torchvision
+matplotlib
+numpy
+flask
+flask_restful
+joblib
