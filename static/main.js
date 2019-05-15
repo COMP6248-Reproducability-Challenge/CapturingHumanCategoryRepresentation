@@ -36,7 +36,7 @@ const updateImages = (chainType, chainID) => {
 
 const getImageNames = (chainType, chainID) => {
     // const Http = new XMLHttpRequest()
-    const url = `http://127.0.0.1:5002/types/${chainType}/chains/${chainID}`
+    const url = `http://35.234.154.48:3000/types/${chainType}/chains/${chainID}`
     // Http.open("GET", url)
     // Http.send()
     //
