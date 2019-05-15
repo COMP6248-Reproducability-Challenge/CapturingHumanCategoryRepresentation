@@ -52,7 +52,7 @@ const getImageNames = (chainType, chainID) => {
 }
 
 const accept = (chainType, chainID) => {
-    const url = `http://127.0.0.1:5002/types/${chainType}/chains/${chainID}/accept`
+    const url = `http://35.234.154.48:3000/types/${chainType}/chains/${chainID}/accept`
     return new Promise((resolve, reject) => {
         $.get(url, (data, status) => {
             console.log(data)
@@ -62,7 +62,7 @@ const accept = (chainType, chainID) => {
 }
 
 const reject = (chainType, chainID) => {
-    const url = `http://127.0.0.1:5002/types/${chainType}/chains/${chainID}/reject`
+    const url = `http://35.234.154.48:3000/types/${chainType}/chains/${chainID}/reject`
     return new Promise((resolve, reject) => {
         $.get(url, (data, status) => {
             console.log(data)
@@ -71,8 +71,15 @@ const reject = (chainType, chainID) => {
     })
 }
 
+const questions = {
+    Man: 'Which looks most like a man?',
+    Woman: 'Which looks most like a woman?',
+    Happy: 'Which looks most like someone who is happy?',
+    Sad: 'Which looks most like someone who is sad?'
+}
+
 const updateTitle = (type) => {
-    $('#title').text(`Which looks more like a ${type}`)
+    $('#title').text(questions[type])
 }
 
 $(document).ready(run)
