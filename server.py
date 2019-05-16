@@ -6,7 +6,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 from json import dumps
 # from flask.ext.jsonpify import jsonify
-from joblib import dump
+from joblib import dump, load
 
 from chain import Chain
 import markov
@@ -18,6 +18,7 @@ n_chains = 4
 chain_types = ['Man', 'Woman', 'Happy', 'Sad']
 
 chains = {}
+
 
 def generate_proposal(chain):
     # chain_key = '{}/{}'.format(chain_type, chain_id)
@@ -39,25 +40,50 @@ def generate_proposal(chain):
 
     return proposal_name
 
+
+def load_chain (type, id):
+    loaded = True
+    ch = None
+    ind = 1
+    while loaded:
+        try:
+            ch = load('chain_data/{}/chain_{}/{}'.format(type, id, ind * 100))
+            print('Loaded chain:', '{}/chain_{}/{}'.format(type, id, ind * 100))
+            ind += 1
+        except FileNotFoundError:
+            loaded = False
+
+    return ch
+
+
+def create_chain (type, id):
+    chain = Chain(c, type)
+    if not os.path.exists('static/images/{}/chain_{}'.format(type, id)):
+        os.makedirs('static/images/{}/chain_{}'.format(type, id))
+
+    if not os.path.exists('chain_data/{}/chain_{}'.format(type, id)):
+        os.makedirs('chain_data/{}/chain_{}'.format(type, id))
+
+    z = markov.noise()
+    img = markov.generate(z)
+    img_name = '{}/chain_{}/0.jpg'.format(type, id)
+    markov.save_image(img, 'static/images/' + img_name)
+    z = z.detach().numpy()
+    chain.add_link(z, img_name)
+    print(chain.type, chain.id)
+    generate_proposal(chain)
+    print('Created chain:', '{}/chain_{}'.format(type, id))
+    return chain
+
+
 for type in chain_types:
     for c in range(n_chains):
+        chain = load_chain(type, c)
+        if chain is None:
+            chain = create_chain(type, c)
+
         chain_key = '{}/{}'.format(type, c)
-        chain = Chain(c, type)
         chains[chain_key] = chain
-        if not os.path.exists('static/images/{}/chain_{}'.format(type, c)):
-            os.makedirs('static/images/{}/chain_{}'.format(type, c))
-
-        if not os.path.exists('chain_data/{}/chain_{}'.format(type, c)):
-            os.makedirs('chain_data/{}/chain_{}'.format(type, c))
-
-        z = markov.noise()
-        img = markov.generate(z)
-        img_name = '{}/chain_{}/0.jpg'.format(type, c)
-        markov.save_image(img, 'static/images/' + img_name)
-        z = z.detach().numpy()
-        chain.add_link(z, img_name)
-        print(chain.type, chain.id)
-        generate_proposal(chain)
 
 class Chain(Resource):
     def get(self):
@@ -105,4 +131,6 @@ api.add_resource(ChainReject, '/types/<chain_type>/chains/<chain_id>/reject')
 
 
 if __name__ == '__main__':
-     app.run(host='0.0.0.0', port='3000')
+    host = '0.0.0.0' if os.environ.get('PYTHON_ENV') == 'PRODUCTION' else '127.0.0.1'
+    print('env:', os.environ.get('PYTHON_ENV'))
+    app.run(host=host, port='3000')

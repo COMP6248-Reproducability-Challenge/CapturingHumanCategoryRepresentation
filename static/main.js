@@ -36,7 +36,7 @@ const updateImages = (chainType, chainID) => {
 
 const getImageNames = (chainType, chainID) => {
     // const Http = new XMLHttpRequest()
-    const url = `http://35.234.154.48:3000/types/${chainType}/chains/${chainID}`
+    const url = `../types/${chainType}/chains/${chainID}`
     // Http.open("GET", url)
     // Http.send()
     //
@@ -52,7 +52,7 @@ const getImageNames = (chainType, chainID) => {
 }
 
 const accept = (chainType, chainID) => {
-    const url = `http://35.234.154.48:3000/types/${chainType}/chains/${chainID}/accept`
+    const url = `../types/${chainType}/chains/${chainID}/accept`
     return new Promise((resolve, reject) => {
         $.get(url, (data, status) => {
             console.log(data)
@@ -62,7 +62,7 @@ const accept = (chainType, chainID) => {
 }
 
 const reject = (chainType, chainID) => {
-    const url = `http://35.234.154.48:3000/types/${chainType}/chains/${chainID}/reject`
+    const url = `../types/${chainType}/chains/${chainID}/reject`
     return new Promise((resolve, reject) => {
         $.get(url, (data, status) => {
             console.log(data)

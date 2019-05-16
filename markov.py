@@ -1,3 +1,5 @@
+import math
+
 import torch
 import numpy as np
 import matplotlib
@@ -12,8 +14,8 @@ nz = 100
 ngf = 64
 nc = 3
 
-sd_1 = 0.1
-sd_2 = 0.5
+sd_1 = 0.25
+sd_2 = 2
 p = 0.5
 
 netG = Generator(ngpu, nz, ngf, nc)
@@ -49,6 +51,12 @@ def generate(z):
 def noise():
     return torch.randn(1, nz, 1, 1)
 
+def wrap(z):
+    if abs(z) < 1:
+        return z
+    else:
+        return -np.sign(z) * (1 - (z - math.floor(z)))
+
 def mutate(z):
     if np.random.uniform() < p:
         noise = np.random.normal(0, sd_1, (1, 100, 1, 1))
@@ -57,7 +65,7 @@ def mutate(z):
     print(z.shape)
     print(noise.shape)
 
-    return z + noise
+    return np.vectorize(wrap)(z + noise)
 
 def save_image(img, name):
     # print((img * 255).astype(int))

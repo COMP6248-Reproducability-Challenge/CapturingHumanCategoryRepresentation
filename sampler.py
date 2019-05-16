@@ -12,13 +12,22 @@ nc = 3
 
 netG = Generator(ngpu, nz, ngf, nc)
 
-state = torch.load('./weights/G/2/epoch_50', map_location='cpu')
+# state = torch.load('./weights/G/2/epoch_199', map_location='cpu')
+state = torch.load('./weights/G/epoch_99', map_location='cpu')
 netG.load_state_dict(state)
 netG.eval()
 
+def wrap(z):
+    if abs(z) < 1:
+        return z
+    else:
+        return -np.sign(z) * (1 - (z - np.floor(z)))
+
 # z = torch.tensor(np.random.uniform(-1, 1, (1, 100)))
 b_size = 1
-noise = torch.randn(b_size, nz, 1, 1)
+# noise = torch.randn(b_size, nz, 1, 1)
+noise = np.vectorize(wrap)(np.random.normal(0, 1, (1, 100, 1, 1)))
+noise = torch.tensor(noise).float()
 print(noise.shape)
 
 with torch.no_grad():
