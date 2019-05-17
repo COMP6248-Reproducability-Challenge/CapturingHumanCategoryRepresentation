@@ -1,4 +1,4 @@
-static/images
-chain_data
+dcgan/static/images
+dcgan/chain_data
 __pycache__
-weights
+dcgan/weights
