@@ -1,3 +1,9 @@
+# --------
+# This code is adapted from a tutorial on the pytorch website
+# which can be found here
+# https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
+# --------
+
 import torch.nn as nn
 
 
